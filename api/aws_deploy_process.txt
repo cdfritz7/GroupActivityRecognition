@@ -1,0 +1,30 @@
+https://medium.com/analytics-vidhya/deploy-restful-api-with-flask-on-aws-12575c808b4
+
+Creation Process
+1) signed into aws
+2) clicked 'EC2'
+3) clicked 'Launch instance'
+4) selected 'Ubuntu Server 18.04 LTS (HVM)...'
+5) chose 't2.micro'
+6) move to 'Configure Security Group Tab'
+7) add the following rules
+      - http,            80,   0.0.0.0/0, ::/0
+      - Custom TCP Rule, 8080, 0.0.0.0/0, ::/0
+      - https,           80,   0.0.0.0/0, ::/0
+8) Click review and launch
+9) Hit launch
+10) Choose 'create a new key pair' from dropdown menut
+11) Gave the keypair the name 'GroupActivityRecognition' and downloaded it
+12) Once downloaded, changed permissions of file to 600 (file owner can read and write)
+13) Hit 'launch'
+
+How To Transfer Files and Deploy
+1) Can transfer files with $sudo scp -r -i ./GroupActivityRecognition.pem /path/to/local ubuntu@<Public IPV4 DNS>:/path/to/copy
+1.1) Try to avoid transferring lots of files (i.e. dependencies), instead install these while on the server
+2) Connect to instance with $ssh -i ./GroupActivityRecognition.pem ubuntu@<Public IPV4 DNS>
+3) $cd api
+4) go into virtual environment with $source env/bin/activate
+5) run flask app in background with $python3 app.py &
+6) leave ssh with $exit
+7) access api with <Public IPV4 address>:8080/<api-path>
+7) MAKE SURE to stop the instance when you're done using it. This will change the Public IPV4 address and the Public IPV4 DNS on the next run but the data on the server with remain.

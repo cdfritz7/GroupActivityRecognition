@@ -27,9 +27,9 @@ def sendActivityFromUser():
 
     return dbAccess.sendActivityFromUser(db, lat, lng, userId, label)
 
-@app.route('/getAreaActivity/', methods=['GET'])
-def getAreaActivity():
-    dbAccess.getAreaActivity(db)
+@app.route('/getAreaActivity/<areaId>', methods=['GET'])
+def getAreaActivity(areaId):
+    return str(dbAccess.getAreaActivity(db, areaId))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

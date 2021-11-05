@@ -19,9 +19,9 @@ Creation Process
 13) Hit 'launch'
 
 How To Transfer Files and Deploy
-1) Can transfer files with $sudo scp -r -i ./GroupActivityRecognition.pem /path/to/local ubuntu@<Public IPV4 DNS>:/path/to/copy
+1) Can transfer files with $sudo scp -r -i ./GroupActivityRecognition.pem /path/to/local ubuntu@<Public IPV4 address>:/path/to/copy
 1.1) Try to avoid transferring lots of files (i.e. dependencies), instead install these while on the server
-2) Connect to instance with $ssh -i ./GroupActivityRecognition.pem ubuntu@<Public IPV4 DNS>
+2) Connect to instance with $ssh -i ./GroupActivityRecognition.pem ubuntu@<Public IPV4 address>
 3) $cd api
 4) go into virtual environment with $source env/bin/activate
 5) run flask app in background with $python3 app.py &

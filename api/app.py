@@ -12,6 +12,7 @@ connectionStr = f"mongodb+srv://{username}:{password}@cluster0.ysnpp.mongodb.net
 client = pymongo.MongoClient(connectionStr)
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 db = client[databaseName]
 
 @app.route('/getAllAreas/', methods=['GET', 'POST'])

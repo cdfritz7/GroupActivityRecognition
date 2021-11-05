@@ -1,5 +1,7 @@
 import pymongo
 import datetime
+from bson.objectid import ObjectId
+from bson.int64 import Int64
 
 '''
 -----------------
@@ -7,7 +9,7 @@ Helper Functions
 -----------------
 '''
 def cullTimedOutInteractions(db, areaId):
-    area = db.area.find_one({"_id":str(areaId)})
+    area = db.area.find_one({"_id":ObjectId(areaId)})
 
     if(area == None):
         return False
@@ -23,7 +25,7 @@ def cullTimedOutInteractions(db, areaId):
 
 def voteAreaLabel(db, areaId):
 
-    area = db.area.find_one({"_id":str(areaId)})
+    area = db.area.find_one({"_id":ObjectId(areaId)})
 
     if(area == None):
         return None
@@ -33,10 +35,11 @@ def voteAreaLabel(db, areaId):
                                                 {"$sortByCount": "$label"}
                                                   ]))
 
+
     if(len(labels) == 0):
         return None
 
-    return labels[0]
+    return {'label':labels[0]['_id'], 'count':labels[0]['count']}
 
 def cullReplacedInteractions(db, areaId, userId):
     db.areaUserInteraction.delete_many({
@@ -82,10 +85,31 @@ def sendActivityFromUser(db, lat, lng, userId, label):
 
     return "success"
 
-#not tested yet
 def getAreaActivity(db, areaId):
 
     if not cullTimedOutInteractions(db, areaId):
         return None
 
     return voteAreaLabel(db, areaId)
+
+def addArea(db, topLeftLat, topLeftLng, bottomRightLat, bottomRightLng, expirationTime):
+
+    print(db)
+    print(topLeftLat)
+    
+    ret = ""
+
+    try:
+        db.area.insert_one({
+            "topLeftLat": float(topLeftLat),
+            "topLeftLng": float(topLeftLng),
+            "bottomRightLat": float(bottomRightLat),
+            "bottomRightLng": float(bottomRightLng),
+            "expirationTime": Int64(expirationTime)
+        })
+        ret = "success"
+
+    except:
+        ret = "failure"
+
+    return ret

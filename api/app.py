@@ -18,6 +18,7 @@ db = client[databaseName]
 def getAreas():
     return dumps(list(db.area.find()))
 
+
 @app.route('/sendActivityFromUser/', methods=['POST'])
 def sendActivityFromUser():
     lat = float(request.form['lat'])
@@ -27,9 +28,22 @@ def sendActivityFromUser():
 
     return dbAccess.sendActivityFromUser(db, lat, lng, userId, label)
 
+
 @app.route('/getAreaActivity/<areaId>', methods=['GET'])
 def getAreaActivity(areaId):
     return str(dbAccess.getAreaActivity(db, areaId))
+
+
+@app.route('/addArea/', methods=['POST'])
+def addArea():
+    topLeftLat = float(request.form['topLeftLat'])
+    topLeftLng = float(request.form['topLeftLng'])
+    bottomRightLat = float(request.form['bottomRightLat'])
+    bottomRightLng = float(request.form['bottomRightLng'])
+    expirationTime = int(request.form['expirationTime'])
+
+    return dbAccess.addArea(db, topLeftLat, topLeftLng, bottomRightLat,
+                            bottomRightLng, expirationTime)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

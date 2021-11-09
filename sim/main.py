@@ -1,3 +1,9 @@
+# main.py
+#
+# Implements a near-real-time discrete event simulator that replays accelerometer sensor streams for 
+# multiple nodes gathered from smartphones in near-real-time. These sensor streams are classified 
+# using the classifier in classifier.py with a fixed frame size.
+
 import simpy
 import math
 import random
@@ -10,26 +16,31 @@ import pandas as pd
 
 from joblib import load
 
-# based on activities detected by Android Activity Recognition API
-# activities = ['IN_VEHICLE', 'ON_BICYCLE', 'ON_FOOT', 'RUNNING', 'STILL', 'TILTING', 'WALKING', 'UNKNOWN']
-
 VERBOSE = False
 
 class ActivityChangedEvent:
+    """ Raised when an activity inference has been made on a sensor stream
+    """
     def __init__(self, origin_node, new_activity):
         self.origin_node = origin_node
         self.new_activity = new_activity
 
 class SensorEvent:
+    """ Raised when a single sample of sensor data has been processed from a stream
+    """
     def __init__(self, origin_node, sample):
         self.origin_node = origin_node
         self.sample = sample
 
 class Node:
+    """ Defines a single actor in the simulation with its own sensor stream. Each Node is,
+    for example, a single individual who might be performing an activity that has an associated
+    sensor stream that we use to make inferences 
+    """
     def __init__(self, scene, id, position, p=None, stream=None, frame_size=None):
         self.scene = scene
         self.id = id
-        self.position = position
+        self.position = position # TODO position is currently unused
         self.stream = stream
 
         env.process(self.sensor_stream_schedule())
@@ -94,19 +105,6 @@ class Node:
                 yield activity_change                
                 self.scene.process_event(activity_change)
 
-    def waypoint_schedule(self):
-        """ Change this node's activity based on a schedule which
-        provides specific activites to change to at certain time slices (waypoints)
-        """
-        for waypoint in self.stream:
-            activity_change = simpy.events.Timeout(
-                self.scene.get_environment(), 
-                delay=waypoint, 
-                value=ActivityChangedEvent(self, self.stream[waypoint])
-            )
-            yield activity_change                
-            self.scene.process_event(activity_change)
-
 class Scene:
     def __init__(self, env):
         print('initializing scene')
@@ -133,8 +131,8 @@ class Scene:
                 if isinstance(event, ActivityChangedEvent):
                     print('[Scene][' + str(self.time) + '] ' + event.origin_node.id + ' is ' + str(event.new_activity))
 
-                # elif isinstance(event, SensorEvent):
-                #     print('[Scene][' + str(self.time) + '] ' + event.origin_node.id + ' sample ' + str(event.sample))
+                elif isinstance(event, SensorEvent) and VERBOSE:
+                    print('[Scene][' + str(self.time) + '] ' + event.origin_node.id + ' sample ' + str(event.sample))
 
             self.event_batch = []
             self.time = env.now
@@ -156,27 +154,12 @@ if __name__ == '__main__':
     env = simpy.rt.RealtimeEnvironment(factor=1/sample_rate, strict=False)
     scene = Scene(env)
 
-    # n1script = {
-    #     0: 'WALKING',
-    #     1: 'STILL',
-    #     10: 'WALKING'
-    # }
-
-    # n2script = {
-    #     3: 'RUNNING',
-    #     10: 'STILL',
-    #     4: 'WALKING'
-    # }
-
+    # read recorded sensor streams into dataframes. these are the sensor streams that will be 
+    # replayed when the simulation is run
     df1 = pd.read_csv('./data/streams/01.csv') # 100Hz sample rate
     df2 = pd.read_csv('./data/streams/00.csv')
-    # print(df)
 
     Node(scene, 'node1', (0, 0), stream=df1)
     Node(scene, 'node2', (0, 0), stream=df2)
-    # nodes = [
-    #     Node(scene, 'node1', (0, 0)),
-    #     Node(scene, 'node2', (50, 50))
-    # ]
 
     env.run()

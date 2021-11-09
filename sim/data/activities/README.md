@@ -1,0 +1,2 @@
+# Individual Activity Training Data
+This directory contains csv files with accelerometer data for training a classifier. Data was collected over 3 minute time spans at 100Hz using the SensorLog app on an iOS kept in the right pocket.

@@ -1,3 +1,14 @@
+# classifier.py
+#
+# Implements and writes to disk a Random Forest classifier from sklearn trained on the
+# activity data in './data/activities'. Features extracted are:
+#   mean(accelerometerX)
+#   mean(accelerometerY)
+#   mean(accelerometerZ)
+#   variance(accelerometerX)
+#   variance(accelerometerY)
+#   variance(accelerometerZ)
+
 import pandas
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D

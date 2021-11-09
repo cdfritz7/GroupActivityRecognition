@@ -1,7 +1,7 @@
 # main.py
 #
 # Implements a near-real-time discrete event simulator that replays accelerometer sensor streams for 
-# multiple nodes gathered from smartphones in near-real-time. These sensor streams are classified 
+# multiple nodes gathered from smartphones. These sensor streams are classified 
 # using the classifier in classifier.py with a fixed frame size.
 
 import simpy

@@ -39,7 +39,10 @@ def voteAreaLabel(db, areaId):
     if(len(labels) == 0):
         return None
 
-    return {'label':labels[0]['_id'], 'count':labels[0]['count']}
+
+    total_count = sum([labels[i]['count'] for i in range(len(labels))])
+
+    return {'label':labels[0]['_id'], 'count':labels[0]['count'], 'total':total_count}
 
 def cullReplacedInteractions(db, areaId, userId):
     db.areaUserInteraction.delete_many({
@@ -96,7 +99,7 @@ def addArea(db, topLeftLat, topLeftLng, bottomRightLat, bottomRightLng, expirati
 
     print(db)
     print(topLeftLat)
-    
+
     ret = ""
 
     try:

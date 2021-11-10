@@ -41,10 +41,11 @@ Documents in these collections should have the following fields
 /getAreaActivity/\<areaId>
   - accepts GET requests
   - removes any expired areaUserInteractions associated with the area that has _id == areaId
-  - returns the most occuring label for all areaUserInteractions associated with the area that has
-    _id == areaId
+  - returns : the most common label for all areaUserInteractions associated with the area that has
+    _id == areaId, the number of occurrences of the most common label, and the total number of
+    areaUserInteractions for the corresponding area
 
 /addArea
   - accepts POST requests with the fields "topLeftLat", "topLeftLng", "bottomRightLat",
     "bottomRightLng", and "expirationTime"
-  - inserts an area into the database 
+  - inserts an area into the database

@@ -1,4 +1,4 @@
 */__pycache__
 */env
 *.DS_Store
-*.mp4
+/sim/data/streams/lab_scenario/GroundTruth_20211111_171716.mp4

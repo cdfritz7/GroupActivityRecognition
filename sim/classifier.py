@@ -136,7 +136,7 @@ def fit_random_forest(df):
 
 
 def main():
-    activities = ['walking', 'running', 'sitting']
+    activities = ['walking', 'running', 'still']
     features = (mean, variance)
     frameSize = 100 # 1s for a 100Hz sample rate
     overlap = 75 # %

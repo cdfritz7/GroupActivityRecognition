@@ -1,8 +1,8 @@
 # main.py
 #
-# Implements a near-real-time discrete event simulator that replays accelerometer sensor streams for 
-# multiple nodes gathered from smartphones. These sensor streams are classified 
-# using the classifier in classifier.py with a fixed frame size.
+# Implements a near-real-time discrete event simulator that replays smartphone accelerometer 
+# sensor streams associated with nodes. These sensor streams are classified using the 
+# classifier in classifier.py with a fixed frame size.
 
 import simpy
 import math
@@ -11,10 +11,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats as stats
 from statistics import mean, variance
-
 import pandas as pd
-
 from joblib import load
+import requests
 
 VERBOSE = False
 
@@ -129,7 +128,17 @@ class Scene:
 
             for event in self.event_batch:
                 if isinstance(event, ActivityChangedEvent):
-                    print('[Scene][' + str(self.time) + '] ' + event.origin_node.id + ' is ' + str(event.new_activity))
+                    activity = str(event.new_activity[0])
+                    print('[Scene][' + str(self.time) + '] ' + event.origin_node.id + ' is ' + activity)
+                    
+                    # make a POST request to the API with the updated activity
+                    payload = {
+                        'lat': event.origin_node.position[0], 
+                        'lng': event.origin_node.position[1],
+                        'userId': event.origin_node.id,
+                        'label': activity
+                    }
+                    r = requests.post("http://localhost:8080/sendActivityFromUser", data=payload)
 
                 elif isinstance(event, SensorEvent) and VERBOSE:
                     print('[Scene][' + str(self.time) + '] ' + event.origin_node.id + ' sample ' + str(event.sample))
@@ -156,10 +165,16 @@ if __name__ == '__main__':
 
     # read recorded sensor streams into dataframes. these are the sensor streams that will be 
     # replayed when the simulation is run
-    df1 = pd.read_csv('./data/streams/01.csv') # 100Hz sample rate
-    df2 = pd.read_csv('./data/streams/00.csv')
+    df1 = pd.read_csv('./data/streams/lab_scenario/labeled/walk-to-sit-01.csv') # 100Hz sample rate
+    df2 = pd.read_csv('./data/streams/lab_scenario/labeled/walk-to-sit-02.csv')
+    df3 = pd.read_csv('./data/streams/lab_scenario/labeled/walk-to-sit-03.csv')
+    df4 = pd.read_csv('./data/streams/lab_scenario/labeled/walk-to-sit-04.csv')
+    df5 = pd.read_csv('./data/streams/lab_scenario/labeled/alternate-walking-standing.csv')
 
-    Node(scene, 'node1', (0, 0), stream=df1)
-    Node(scene, 'node2', (0, 0), stream=df2)
+    Node(scene, 'node1', (0.5, 0.5), stream=df1)
+    Node(scene, 'node2', (0.5, 0.5), stream=df2)
+    Node(scene, 'node3', (0.5, 0.5), stream=df3)
+    Node(scene, 'node4', (0.5, 0.5), stream=df4)
+    Node(scene, 'node5', (0.5, 0.5), stream=df5)
 
     env.run()

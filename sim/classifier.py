@@ -117,7 +117,6 @@ def fit_random_forest(df):
     x = df.drop('label', axis=1)
     y = df.label
 
-    print(x)
     print('Fitting random forest model to data with 10-fold cross validation...')
 
     rf = RandomForestClassifier()
@@ -136,7 +135,7 @@ def fit_random_forest(df):
 
 
 def main():
-    activities = ['walking', 'running', 'still']
+    activities = ['walking', 'running', 'sitting', 'standing']
     features = (mean, variance)
     frameSize = 100 # 1s for a 100Hz sample rate
     overlap = 75 # %

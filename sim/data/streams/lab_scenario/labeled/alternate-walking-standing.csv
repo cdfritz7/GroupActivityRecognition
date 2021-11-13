@@ -1,4 +1,4 @@
-loggingTime(txt),loggingSample(N),accelerometerTimestamp_sinceReboot(s),accelerometerAccelerationX(G),accelerometerAccelerationY(G),accelerometerAccelerationZ(G),
+loggingTime(txt),loggingSample(N),accelerometerTimestamp_sinceReboot(s),accelerometerAccelerationX(G),accelerometerAccelerationY(G),accelerometerAccelerationZ(G),groundTruthLabel
 25:01.0,488,232795.422,-0.171951294,0.931716919,0.196563721,walking
 25:01.0,489,232795.432,-0.198059082,0.987533569,0.167327881,walking
 25:01.0,490,232795.4421,-0.170944214,1.057510376,0.144897461,walking

@@ -3,3 +3,4 @@
 *.DS_Store
 /sim/data/streams/lab_scenario/GroundTruth_20211111_171716.mp4
 *.gsheet
+./api/GroupActivityRecognition.pem
